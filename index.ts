@@ -71,25 +71,52 @@ const aColor = gl.getAttribLocation(program, 'aColor');
 
 console.log({aPSize,aPos,aColor})
 
-gl.enableVertexAttribArray(aPSize);
-gl.enableVertexAttribArray(aPos);
-gl.enableVertexAttribArray(aColor);
+const pTranslation = {x:0,y:0.5};
+const p1 = {x:0.2,y:-0.5};
 
-const bufferData = new Float32Array([
-  -0.2,-0.5,        100,   1,0,0,
-  0.7,-0.1,        20,   0,1,0,
-  -0.3,0.6,        50,   0.4,0.7,1,
-])
 
-const buffer = gl.createBuffer();
-gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-gl.bufferData(gl.ARRAY_BUFFER,bufferData, gl.STATIC_DRAW)
+function draw() {
+  gl.clear(gl.COLOR_BUFFER_BIT);
 
-gl.vertexAttribPointer(aPSize,1,gl.FLOAT,false,6*4,2*4)
-gl.vertexAttribPointer(aPos,2,gl.FLOAT,false,6*4,0)
-gl.vertexAttribPointer(aColor,3,gl.FLOAT,false,6*4,3*4)
+  gl.enableVertexAttribArray(aPSize);
+  gl.enableVertexAttribArray(aPos);
+  gl.enableVertexAttribArray(aColor);
+  const bufferData = new Float32Array([
+    0.7,-0.1,        20,   0,1,0,
+    -0.3,0.6,        50,   0.4,0.7,1,
+    p1.x,p1.y,       100,  1,0,0,
+  ])
+  
+  const buffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+  gl.bufferData(gl.ARRAY_BUFFER,bufferData, gl.STATIC_DRAW)
+  
+  gl.vertexAttribPointer(aPos,2,gl.FLOAT,false,6*4,0)
+  gl.vertexAttribPointer(aPSize,1,gl.FLOAT,false,6*4,2*4)
+  gl.vertexAttribPointer(aColor,3,gl.FLOAT,false,6*4,3*4)
+  
+  gl.drawArrays(gl.POINTS, 0, 3);
+  
+}
 
-gl.drawArrays(gl.TRIANGLES, 0, 3);
+
+draw();
+
+const sliderX = document.querySelector("#x");
+const sliderY = document.querySelector("#y");
+
+sliderX.addEventListener("input", e => {
+  p1.x = e.target.value/100;
+  draw();
+})
+sliderY.addEventListener("input", e => {
+  p1.y = e.target.value/100;
+  draw();
+
+})
+
+
+
 
 // OLD UNIFORM
 // const uCol = gl.getUniformLocation(program, 'uCol');
